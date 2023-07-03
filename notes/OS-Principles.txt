@@ -1,0 +1,206 @@
+Operating System Principles
+
+1. Introduction
+
+> We build increasingly large, complex software, which create numerous problems
+    1. typical project involves multiple orders of magnitutde more code than
+        projects 2-30 years ago.
+    2. work to create software is much worse than linear with the number of lines 
+        of code involved.
+    3. difficult to learn, leading to more errors in construction.
+    4. assembled from numerous independent pieces, small changes in one component
+        often result in failures of other components.
+    5. unpredictable complex behaviors emerge from increasing number of independent
+        interacting components.
+    6. complete testing combinatorically impossible.
+    7. increasing dependency on fallible software will cause more severe problems
+        for more people, more often.
+
+> Operating systems must
+    1. involve
+        - complex interactions among many subsystems.
+        - numerous asynchronous interactions and externally originated events.
+        - sharing of stateful resources among cooperating parrallel processes.
+        - coordinated actions among heterogenous components in large distributed systems.
+    2. evolve to meet ever-changing requirements.
+    3. run, without error, despite failures of 'all' components.
+    4. portable across 'virtually all' computer architectures and function in heterogenous
+        environments.
+
+2. Complexity Management Principles
+
+> Software engineering developed numerous tools to help manage complexity of software 
+    projects.
+
+2.1 Layered Structure and Hierarchical Decomposition
+
+> A complex system has too many components to be held in a single mind. We must break
+    the system down into smaller components that can be understood individually.
+> ***Hierarchical Decomposition*** is the process of decomposing a system in a top-down 
+    fashion.
+> To hierarchically decompose University of California, we might
+    1. Divide UC into the Regents, Office of the President, and campuses
+    2. Divide all campuses and labs into Ucla, Cal, ...
+    3. Divide a campus into administrations and schools; Letters of Sciences, SEAS, ...
+    4. Divide an administration into departments; personnel, legal, finance, ...
+    5. Divide a department into admin staff, faculty, ...
+    6. Divide admin staff into responsibilty areas; payroll, purchasing, ...
+
+> At each level, we talk about the mission of each group. We can develop an understanding
+    of one group without having to understand hte interan lstructure of all the groups
+    with which it interacts.
+> Hierarchical Decomposition is not merely a technique for studying existing systems, but
+    a principle for designing new systems. It becomes much possibile to understanding, and
+    to manage the system.
+
+> Hierarchical structure is an effective approach to desigining complex systems, but the
+    the operation of these systems is not always strictly hierarchical. The academic
+    senate is comprised of department faculty (5th ranked on hierarchy) but their
+    decisions may have implications for the entire system. There are advantages to trying 
+    to minimize the non-hierachical communication. In this course we study and observe
+    the hierachical design of a complex modern operating system.
+
+2.2 Modularity and Functional Encapsulation
+
+> Taking a few million and arbitrarily assining them to groups of 10, then arbitrarily
+    assigning those groups into super groups of 100 would not be sufficient to make
+    the system understandable.
+
+> The difference between a arbitrary decomposition and hierachical decomposition are
+    1. groups have a coherent purpose.
+    2. most functions for which a group is responsibile for are performed entirely within
+        that group.
+    3. unions of groups/components are able to achieve the system's purpose.
+
+> Hierarchical decomposition enables use to examine a group's
+    1. responsibilities and role in the system which it is a part.
+    2. internal structure and operating rules by which it fulfills its responsibilities.
+
+> As long as a component effectively fulfills its responsibilities, external clients 
+    ignore the internal structure and operating rules. We call components ***modules*** 
+    when its possbile to understand and use the functions of a component without 
+    understanding its internal structure. The implementation details are 
+    ***encapsulated*** within that module. If all components of a system have this
+    characteristic, then the system design is ***modular***.
+
+> Characteristics of good modularity include
+    1. small, simple, comprehensible components are easy to manage than larger, complex
+        components. Even though University of California has thousand departments,
+        its not particularly difficult to understand the role and responsibilities of
+        any particular department or admin.
+    2. combining closely related functionality into a single module. If operations on a 
+        single resource are performed in different modules, a change in component may
+        break another component. In combination with characteristic 1, we define 
+        ***cohesion*** as wanting the smallest possible modules with the 
+        co-location of closely related functionality. A module which exhibits cohesion is
+        said to be ***cohesive***.
+    3. most operations can be accomplished entirely within a single component. If many
+        operations involve exchagnes of services between components, problems such as
+            1. overhead of communication between components reduces system efficiency.
+            2. increased number of interaces to service inter-component requests increase
+                the complexity of the system, and opportunity for misunderstanding.
+            3. increased dependencies between components increase likelihood of errors.
+
+2.3 Appropriately Abstracted Interfaces and Information Hiding.
+
+> There are numerous ways to specify the interface of component functionality, though
+    not all equally good. It's natural for an implementer to define interfaces that mate
+    easily for an intended implementation. A faucet delivers water at a rate, temperature
+    controlled by a chosen mix of hot/cold water. It is not a good interface,
+        1. I don't want to guess the (changing over time) amounts of hot and cold water
+            that it will provide for me. An ***appropriate abstraction*** enables a client
+            to specify the most meaningful parameters and achieve desired results.
+            An interface unlike this is said to be ***poorly abstracted***.
+        2. The two-valve interface is coupled to a hot/cold water supply implementation.
+            If water temperature was controlled by a flash heater, a two-valve set of
+            controls is hard to implement. An appropriately abstracted interface is
+            ***opaque*** when it does not reveal underlying implementation and exhibits
+            good ***informationg hiding*** when not exposing implementation details that
+            clients did not want to forced to understand.
+    
+> Two seperate controls for (1)temperature and (2)flow rate would opaquely encapsulate
+    the water delivery mechanisms, better serving clients and providing greater
+    flexibility to the implementers.
+
+> Exposing implementation details would
+    1. expose more complexity to the client, making it harder to learn.
+    2. limit providers flexibility to change the interface in the future. The previous
+        interface included many aspects of the implementation. A new implementation will
+        expose clients to an incompatiable, new interface.
+
+2.4 Powerful abstraction
+
+> If every problem must be solved from scratch, every problem is hard to solve, and 
+    progress is slow. If able to draw on a library of powerful tools, most problems can 
+    be solved by existing tools. Most of classical mechanics is based on a few machines 
+    (wheel, lever, screw, ...). These are not merely artifacts to invent things, but set 
+    terms in which we visualize our problems. A new technique or tool may radically alter 
+    an approach to problems and existing problems we can solve.
+
+> Virtually all resources in an operating system are abstract concepts from imaginations
+    of systems architects. As OS evolved, we devise more powerful abstractions.
+    A powerful abstraction is one that can be 'profitably' applied to many situations:
+        common
+            1. paradigms enable us to more easily understand a range of phenomena.
+            2. architectures are used as fundamental models for new solutions.
+            2. mechanisms in terms of which we can visualize and construct solutions.
+
+> Sufficiently powerful abstractions give tools to understand, organize, control systems
+    that are otherwise intractably complex. We study emergent phenomena in large and 
+    complex systems, concepts in which those phenomena can be understood, and abstractions 
+    in which they can be managed.
+
+2.5 Interface Contracts
+
+> Hierarchical decomposition and modular information hiding moves out attention from
+    implementations to interfaces. Systems and components are understood in terms of 
+    services it provides and their interfaces through which they provide services. If 
+    the component acts according to the interface specification, and clients ensure
+    all use is within scope of interface specification, then system should work, no
+    matter what changes are made to individual compoment implementations.
+
+> These contracts don't merely specify what we'll do today, but represent commitment for
+    what will be done in the future, which is important in large, complex systems: OS.
+    Operating systems are used for decades, assembled from thousands of parts, developed
+    by thousands of people, most whom operate independently from one another.
+    Evolutions in technologies and requirements inspire continous change in 
+    component implementations. If new versions of components don't fully comply to their
+    interface specifications problems are likely to arise, resulting in system failure.
+
+> If logistically and combinatorically infeasible to test every change with every
+    combination of components (and their versions), interface contracts are the first line
+    of defense from incompatiable changes. If component evolution honors the interface 
+    contracts, system should continue to function, despite independent evolution of its
+    constituent components.
+
+2.6 Progressive Refinement
+
+> Linux didn't satrt out as fully featured platform that it currently is, but to 
+    complement the GNU tools with a re-implementation of most UNIX kernel functionality.
+    All the wonderful present features were added incrementally. Software projects that
+    attempt to grand things, starting from a clean slate, often fail after many years
+    incur problems:
+        it's difficult to
+            1. estimate work
+            2. anticipate problems
+            3. get requirements right
+                in a large project.
+        they often
+            1. take so long (to develop) that they're obselete before finish.
+            2. lose support before finish.
+            
+> Most modern methodologies now embrace some form of interative or incremental development
+    1. add new functionality in smaller, one feature, projects. It's easy to identify 
+        problems in a smaller project, and estimate required work + delivery date. The work
+        can be done by smaller team, with better efficieny.
+    2. Rather than large speculative projects, identify specific users with specific needs
+        and build around addressing those needs, while moving in the right direction.
+        Having a specific problem to leads to better requirements and delivering to
+        actual users creates value quickly.
+    3. Deliver functionality ASAP to get feeback before moving to the next step. Software
+        requirements are speculative and delivering something and recieving feedback is the 
+        best way to proceed.
+    4. It's easier to plan the next step with data from the previous step. Real 
+        performance data guides towards most important improvements.
+    
+3. Architectural Paradigms
