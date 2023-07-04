@@ -1,6 +1,8 @@
 Operating System Principles
 
+
 1. Introduction
+===============
 
 > We build increasingly large, complex software, which create numerous problems
     1. typical project involves multiple orders of magnitutde more code than
@@ -27,10 +29,13 @@ Operating System Principles
     4. portable across 'virtually all' computer architectures and function in heterogenous
         environments.
 
+
 2. Complexity Management Principles
+===================================
 
 > Software engineering developed numerous tools to help manage complexity of software 
     projects.
+
 
 2.1 Layered Structure and Hierarchical Decomposition
 
@@ -47,11 +52,11 @@ Operating System Principles
     6. Divide admin staff into responsibilty areas; payroll, purchasing, ...
 
 > At each level, we talk about the mission of each group. We can develop an understanding
-    of one group without having to understand hte interan lstructure of all the groups
+    of one group without having to understand the internal structure of all the groups
     with which it interacts.
 > Hierarchical Decomposition is not merely a technique for studying existing systems, but
-    a principle for designing new systems. It becomes much possibile to understanding, and
-    to manage the system.
+    a principle for designing new systems. It becomes much more possibile to understand, 
+    and manage the system.
 
 > Hierarchical structure is an effective approach to desigining complex systems, but the
     the operation of these systems is not always strictly hierarchical. The academic
@@ -59,6 +64,7 @@ Operating System Principles
     decisions may have implications for the entire system. There are advantages to trying 
     to minimize the non-hierachical communication. In this course we study and observe
     the hierachical design of a complex modern operating system.
+
 
 2.2 Modularity and Functional Encapsulation
 
@@ -101,6 +107,7 @@ Operating System Principles
                 the complexity of the system, and opportunity for misunderstanding.
             3. increased dependencies between components increase likelihood of errors.
 
+
 2.3 Appropriately Abstracted Interfaces and Information Hiding.
 
 > There are numerous ways to specify the interface of component functionality, though
@@ -128,6 +135,7 @@ Operating System Principles
         interface included many aspects of the implementation. A new implementation will
         expose clients to an incompatiable, new interface.
 
+
 2.4 Powerful abstraction
 
 > If every problem must be solved from scratch, every problem is hard to solve, and 
@@ -150,6 +158,7 @@ Operating System Principles
     complex systems, concepts in which those phenomena can be understood, and abstractions 
     in which they can be managed.
 
+
 2.5 Interface Contracts
 
 > Hierarchical decomposition and modular information hiding moves out attention from
@@ -165,7 +174,7 @@ Operating System Principles
     by thousands of people, most whom operate independently from one another.
     Evolutions in technologies and requirements inspire continous change in 
     component implementations. If new versions of components don't fully comply to their
-    interface specifications problems are likely to arise, resulting in system failure.
+    interface specifications, problems are likely to arise, resulting in system failure.
 
 > If logistically and combinatorically infeasible to test every change with every
     combination of components (and their versions), interface contracts are the first line
@@ -173,21 +182,22 @@ Operating System Principles
     contracts, system should continue to function, despite independent evolution of its
     constituent components.
 
+
 2.6 Progressive Refinement
 
-> Linux didn't satrt out as fully featured platform that it currently is, but to 
+> Linux didn't start out as fully featured platform that it currently is, but to 
     complement the GNU tools with a re-implementation of most UNIX kernel functionality.
     All the wonderful present features were added incrementally. Software projects that
     attempt to grand things, starting from a clean slate, often fail after many years
     incur problems:
-        it's difficult to
-            1. estimate work
-            2. anticipate problems
-            3. get requirements right
+        1. it's difficult to
+            - estimate work
+            - anticipate problems
+            - get requirements right
                 in a large project.
-        they often
-            1. take so long (to develop) that they're obselete before finish.
-            2. lose support before finish.
+        2. they often
+            - take so long (to develop) that they're obselete before finish.
+            - lose support before finish.
             
 > Most modern methodologies now embrace some form of interative or incremental development
     1. add new functionality in smaller, one feature, projects. It's easy to identify 
@@ -195,7 +205,7 @@ Operating System Principles
         can be done by smaller team, with better efficieny.
     2. Rather than large speculative projects, identify specific users with specific needs
         and build around addressing those needs, while moving in the right direction.
-        Having a specific problem to leads to better requirements and delivering to
+        Having a specific problem to solve leads to better requirements and delivering to
         actual users creates value quickly.
     3. Deliver functionality ASAP to get feeback before moving to the next step. Software
         requirements are speculative and delivering something and recieving feedback is the 
@@ -203,4 +213,207 @@ Operating System Principles
     4. It's easier to plan the next step with data from the previous step. Real 
         performance data guides towards most important improvements.
     
+
 3. Architectural Paradigms
+==========================
+
+> Over decades of OS development, there are few powerful concepts of very broad 
+    applicability.
+
+
+3.1 Mechanism/Policy Separation
+
+> Mechanisms for managing resources should not constrain the policies according to which
+    those resources are used. A system is likely to be used for a long time, environments
+    that designers never anticipated. Resource managers should be designed such that
+        1. ***mechanisms*** keeps track of resources, revoke/give access to them.
+        2. ***policy*** engine controls which clients get which resources when. 
+
+> A good example of mechanism/policy separation can be seen in card-key lock systems:
+    1. each door has a card-key reader and computer-controlled lock.
+    2. each user is given a personal card-key.
+    3. each user swipes a card-key to access a room
+    4. a controlling computer accesses a control database to decide whether each user
+        should be granted access to the door at that time, and if so send an unlock signal
+
+> The physical mechanisms are the card-keys, readers, locks, and computer.
+  The resource allocation policy is the rules in the control database.
+  The mechanisms impose very few constraints on who should be allowed to enter which rooms.
+
+> Because policy is indepdent from the mechanisms, a different mechanism implementation
+    (RFID tags) can support the exam same access policies, without great impact on policy.
+
+> Mechanism/policy separation guides us to build systems usable in future contexts.
+
+
+3.2 Indirection, Federation, and Deferred Binding
+
+> Powerful unifying abstractions lead to general object classes with multiple
+    implementations. Consider a file system: there are many different types of file
+    systems (DOS/FAT, ISO 9660, Linux EXT3) but they all implement similar functionality.
+    One could write a OS that understood every file system format, but that would 
+    be infeasible due to range and evolution of formats. We must add support for new 
+    file systems indepdent of the OS they are connected to. The common way to
+    accomodate multiple implementations of similar functionality is with plug-in
+    modules which share a few features
+        1. a common class interface which all plug-in modules adhere.
+        2. implementations are not built into the OS, but accessed ***indirectly***
+            (through a pointer to a specific object instance).
+        3. indirection is achieved through a ***federation framework*** that registers
+            available implementations, enabling clients to select the implementation
+            and automatically route all future requests to the selected implementation.
+        4. ***binding*** of a client to an implementation doesn't happen when the 
+            software is built, but ***deferred*** when a client needs to access the
+            resource.
+        5. ***deferred binding*** goes beyond the client's ability to select an
+            implementation at run-time. The implementing modules may be 
+            ***dynamically discovered***, and ***dynamically loaded***. The module may
+            be loaded into the OS only when a client requests it.
+
+
+3.3 Dynamic Equilibrium
+
+> It's easy to design a system for a particular load, yet most systems are used in a wide
+    range of different conditions over time. To combat this, complex systems contain 
+    numerous tunable parameters to optimize behavior for a given load. Unfortunately, a 
+    good set of tunable parameters isn't enough to ensure systems are well tuned:
+        1. tuning parameters are highly tied to a particualr implenmentation, and 
+            proper configuration required deep understanding of complex processes
+        2. loads in large systems continuously change, and effectiveness of parameters
+            can change within seconds. It's unpractical to expect humans to continuously
+            adjust system configuration to changing behavior.
+        3. its possible to create automated management agents continuously monitor
+            system behavior. Yet, these agents can misinterpret symptoms or drive
+            the system into uncontrolled oscillation. 
+
+> Nature is abundant of complex systems, few perfectly tuned. Stability of a complex
+    natural system results from ***dynamic equilibrium***, where the stats is the next
+    result of multiple opposing forces, and external events that perturb the system 
+    automatically trigger a reaction in the opposite direction:
+        1. amount of water in a sealed pot is result of evaporation and condensation.
+            When the temp is raised, increased evaporation occurs, leading to increase in
+            steap vapor pressure, resulting in greater re-condensation.
+        2. the deer population results from food supply and predation by wolves. When food
+            supply increases, a growing deer population leads to an increase in wolf 
+            population, reducing the deer population.
+
+> If rsource allocation is driven by opposing forces, we can design systems that 
+    continuously employ dynamic equilibrium to achieve stable operation in the face
+    of ever-changing laods.
+
+
+3.4 The Criticality of Data Structures
+
+> Its natural for programmers to focus attention on algorithms and their implementations,
+    but the solution to many hard software design problems is found in data organization.
+    Our program state is stored in data structures, and its usually the case instruction
+    cycles are dominantly spent searching, copying, updating data structures. Our data
+    structure designs determine:
+        1. which operations
+            - are fast or slow (by number of pointers to be followed).
+            - are simple or complex (by number of data structures to be updated).
+        2. locking requirements for operations (and hence achievable parrallelism). 
+        3. speed and success probability of error recovery.
+
+> The solution to difficult performance, robustness, or correctness is found in the right
+    data structures. Given those data structures, algorithms become obvious. 
+
+
+4. Life Principles
+==================
+
+> Life is abundant with complex, parallel activities among numerous indepdent agents
+    (education, marriage, jobs, children). It's unsurprsing lessons we learn from OS
+    can be applicable to other aspects of our lives.
+
+
+4.1 There Ain't No Such Thing As A Free Lunch
+
+> Everything comes at a cost. There are common situations with simple solutions, though
+   these solutions don't correctly handle all situations. An approach that optimizes 
+   one goal compromises another. Almost always a downside.
+
+> Any solution is likely to involve costs, tradeoffs. Before safely changing an important
+    system, we must be able to predict (through research) the consequences. Then, we
+    estimate impacts, prioritize goals, and optimize net expected utility.
+
+
+4.2 The Devil is Usually in the details
+
+> When we find a great solution, a beautiful set of paradigms that eliminate nasty
+    problems, our first articulation of that vision is rarely correct. It must be 
+    refined as we try to understand how we will apply it to the required situations:
+        1. enumerate all the interesting cases.
+        2. it's ambiguous how to make a particular situation fit into our beautiful high
+            level structure.
+        3. Sometimes we
+            - encounter nasty cases which refuse to fit the model.
+            - extend our model to embrace troublesome cases.
+            - conclude our idea simply doesn't work.
+
+
+4.3 Keep It Simple, and It it ain't broke, don't fix it
+
+> Complexity is the enemy. The problems we face are complex, and its natural to recognize
+    enhancements to a solution making it smarter, more complete, and elegant, yet they
+    often prove to be counter-productive.
+        1. many optimizations required extra work for special cases, greatly reducing
+            the benefits of the optimization.
+        2. simple ideas become complex once examining all cases to be handled.
+        3. complex solutions are likely to have complex behavior and unanticipated
+            consequences. If unable to predict behavior assocated with changes, we're
+            likely to create new problems.
+        4. complex solutions are difficult to understand, and are likely to have undetected
+            errors and more difficult to maintain.
+
+
+4.4 Be Clear about your Goals
+
+> We occasionally build software for fun, but with a purpose in mind. If we don't 
+    clearly understand our goals, we achieve them by accident.
+
+> Pursuing a project, we're confronted by questions
+    1. "Will this work?"
+    2. "Which is better?"
+        that can be solved with measurable performace answers, but some come down to 
+        priorities. A clear understanding of goals helps answer these questsions, by
+        enabling inquiry into how each of the alternatives impact each of our goals.
+    
+> When creatively solving problems, its natural to leap to approahes to address
+    problems and exploit opportunities. Though, not all opportunities are on the path
+    to our ultimate goals, and not all problems are blocking the path to our ultimate
+    goals. If we attempt to solve non-critical problems, we make it much more difficult
+    to achieve our goals.
+
+> It's important to keep in mind the high level goals, from which our details goals may
+    have been derived. Our detailed goal might be to eliminate a confusing parameter
+    from an interface, but the real goal is to make the system faster. Having a clear 
+    understanding will enable us to resolve differences of opinion, make better decisions
+    and avoid distractions.
+
+
+4.5 Responsibility and Sustainability
+
+> We need to understand the long-view consequences of our actions, how they affect us
+    and others, and then act responsibly for the best long-run outcome.
+
+> Similarly, no software-managed resource can ever be lost. All memory and secondary
+    storage is recycled. Errors may not be dismissed as unlikely events. The maintain
+    differences between professional and amateur software are completeness and error
+    handling. We're responsible for dealing with the consequences of our actions.
+    OS designered are not, by nature, optimists.
+
+
+5. Conclusions
+==============
+
+> Relatively few people will actually build operating systems software. Most of us will
+    work on complex software, and we'll encounter problems that have already been
+    encountered, and solved by computer scientists, and the like in the field of
+    Operating Systems.
+
+> Try to pull these principles into the discussion of various mechanisms and issues 
+    and see if they shed light on the problems.
+    Powerful tools these are. Serve you they will. 
+
+
