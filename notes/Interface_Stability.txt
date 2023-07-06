@@ -1,0 +1,162 @@
+Interface Stability
+
+
+Interface Specifications
+========================
+
+> American books credit Eli Whitney with the invention of interchangeable parts, though
+    1. his parts weren't at all interchangeable
+    2. he got the idea from French gunsmith Honore Blanc
+    3. Swedish clock maker Christopher Polhem did a much better job with clock gears
+
+> If there are specifications for every parts, and each part is made to these specs,
+    then any collections of these parts can be assembled into a working whole, reducing
+    cost and difficulty of building a working system out of component parts.
+
+> The same principle applies to software. To open a file on a POSIX system, you use the 
+    open system call. There are a hundred different implementations of open, but they all
+    conform to the same interface specification. The rewards for this are:
+        1. the programmer's work is simplified by not writing our own I/O routines.
+        2. your program is easily portable to any POSIX compliant system.
+        3. training time for new programmers is reduced since everyone knows how 
+            to use the POSIX I/O functions.
+
+
+The Criticality of Interfaces in Architecture
+=============================================
+
+> A system architecture defines the major components of the system, functionality of each,
+    and interfaces between them. The component interface specifications are a critical
+    element of any architecture. It should be possible to independently design and
+    implement those components. In theory, implementations that satisfy those functional
+    and interface specifications combine to yield a working system.
+
+> The converse: To the extent interfaces between components were poorly specified, it is
+    unlikely that independently developed components will work when combined together,
+    and more likely that subsequent changes to one component will break others.
+
+
+The Importance of Interface Stability
+=====================================
+
+> A software interface specification is a form of contract:
+    1. the contract describes an interface and functionality.
+    2. implementation providers agree their system conforms to the specification.
+    3. developers agree their use of functionality conforms to the specification.
+
+> Suppose a devleoper realizes a new parameter for the POSIX open call is required to 
+    accurately describe the behavior of files in a distributed system. 
+    What would happen?
+        1. software written to the new semantics
+            - will have richer behavior, better functionality
+            - would not work on other POSIX compliant systems.
+            - would not work on the new systems.
+        2. customers are faced with inexplicable failures, and start complaining to
+            system providers who arent responsible for the change.
+        3. programmers are confused about which version of open they're using,
+            writing their own I/O packages (extra work) to fix the problem locally.
+
+> When you promise somebody that you will do something, and they depend on you, and
+    you don't follow through, problems are likely to ensue.
+
+
+Interfaces vs. implementations
+==============================
+
+> Suppose someone writes a library for efficient, reliable communication over an unreliable
+    network, and I decide to use it. I realize I need a feature that is included in their
+    documentation, and use it for my product, which becomes a great success.
+
+> 6 months later thei releas a new version, and my product breaks. After debugging, I realize
+    they changed the undocumented code I was depending on. I had not designed my product to
+    work with their ***interfaces***. My product only worked with a particular 
+    ***implementation***, which change.
+
+> People put effort into desigining and maintaining code rather than clarifying
+    and maintaining their documentation. It's tempting to reverse engineer the interface
+    specifications from the implementation, but an interface should exist independently
+    from any implementation.
+
+
+Program vs User Interfaces
+==========================
+
+> Human beings are robust, able to recognize changes in dialog boxes, rearrangement of UI 
+    within seconds. This inclines developers to be cavalier in making changes to the UI.
+
+> Code isnt robust, simple parameter passing erros can cause data corruption, if not 
+    tracebacks and errors.
+
+> If all users were developers and only ran their code, they'd recieve their core dump,
+    figure out the bug, and recode accordingly and move on. In reality, most aren't coders
+    and can only complain when a system doesn't work.
+
+> If delivery binary software to non-developers (99.999% of all software) you'd have to 
+    trust whatever platform they run it on correctly implements interfaces your program
+    depends on.
+
+> If components exchange services, and I make incompatible changes to interfaces of one
+    component, this change could potentially break other components in the same system.
+    I can fix the other components but problems such as 
+        1. complicating the making of the change
+        2. have to ensure the mismatched component sets are impossible.
+
+
+Is every interface carved in stone?
+===================================
+
+> No! You can add features that don't change the interface specification. In many cases,
+    you can add upwards-comptabible extensions. There are a few ways to add comptabible
+    changes to old interfaces without breaking backwards compatibility:
+        1. ***Interface Polymorphism*** - In older languages (C and FORTRAN), routines
+            only had a single interface specification. Yet, in more contemporary 
+            languages that support polymorphism, different versions of a method 
+            are readily distinguishable and it's possible to provide new interfaces to
+            meet new requirements while supporting the older interfaces for backwards
+            compatibility with older applications.
+        2. ***Versioned Interfaces*** - Backwards compatibility don't prevent us from 
+            changing interfaces, but require us to continue providing old interfaces to
+            old clients. It's possible for an application to call out the interace it 
+            requires: 
+                1. java programs are labeled with the run-time env they require
+                2. Network protocal sessions begin with a version negotiation, where 
+                    each side states the interface versions it supports so a mutually
+                    acceptable version can be chosen.
+            This approach permits incompatible interface changes, while requiring servers
+            to support old and new interface versions.
+    
+> Even if we have no ability or deliver multiple interface versions, it's not the case I 
+    can't make incompatible changes or support all interfaces for all of time. It is only
+    necesary the interface stability be understood and adequate to achieve the product
+    goals:  
+        1. It's common to provide alpha access to new services/interfaces with the 
+            understanding that final interfaces are likely to be different. Such
+            releases are for evaluation puurposes. Knowing it will likely change, 
+            developers should use early interfaces for prototyping only.
+        2. Many suppliers have interface stability guidelines for releases. An example is
+            - ***micro-release*** (3.4.1) includes only bug fixes.
+            - ***minor-release*** (3.5) includes new functions, but is upwards comptabible with
+                the underlying major release version.
+            - ***major-release*** (4.0) allowed to make incompatible changes to previously
+                commited interfaces.
+        3. Many suppliers also make specific support commitments (we'll support release
+            3.5 for 5 years from release date), giving developers confidence in a stable
+            software platform for atleast that long. At the end of the period, customers
+            may choose between continuing to run a no-longer supported platform or 
+            moving to new versions of their applications.
+
+
+Interface Stability and Design
+==============================
+
+> If wanting to expose an interface to unbundlded software with high quality requirements,
+    we're not allowed to change the interace in a non-upwards compatible way. We need
+    to consider all the different types of change that are likely to happen over the life
+    of the system. We need to have high confidence that we'll accomodate all envisioned
+    evolution while preserving those interfaces by
+        1. rearranging distrbution of functionality between components to create a 
+            simpler interface between them.
+        2. design features that aren't implemnented to make sure the specified interfaces
+            accomodate them if we decide to build them.
+        3. introduce seemingly unnatural degrees of abstraction to ensure they leave us 
+            enough slack for future changes.
