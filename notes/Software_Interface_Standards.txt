@@ -1,0 +1,232 @@
+Software Interface Standards
+
+
+Introduction
+============
+
+> 2000 years ago, Carthage defined standard component sizes for naval vessels. George
+    Washington gave Eli Whitney contract to build 12,000 muskets with interchangeable parts.
+    The standardization of interchangeable parts enables successible combination of 
+    components made by different people.
+
+> Recently, we've seen tremendous advances in electronics and software, due to powerful
+    off-the-shelf components (circuits, software packages) used to develop new products.
+    No longer reinventing the wheel for each project, we free our time and energy to 
+    develop novel elements of each design. The keys are interchangeablity and 
+    interoperability, supported by compliance with detailed component specifciations.
+
+> In the early days of the computer industry, key software was developed by hardware
+    manufacturers, for whom compatibility was an anti-goal to secure customers. If a 
+    client's application could only run on their platform, they'd be unwilling to 
+    expensively migrate to a competing platform. Though, ***Independent Software 
+    Vendors*** and ***killer applications*** reversed the situation:
+        1. high cost of building different versions of an application for different
+            hardware platforms so high, ISV's wanted to do as few ports as possible.
+        2. computer sales driven by applications they supported. If ISV's didn't port their
+            applications to your platform, you'd quickly lose customers. 
+        3. ***Software Portability*** became a matter of life and death for hardware and
+            software vendors.
+
+> If I can readily use an application on all platforms, then the platforms should supported
+    the same services, meaning we need detailed specifications for all services and 
+    comprehensive compliance testing to ensure correctness of all those implementations.
+
+> The next big change is the customers who computers and softwares were. In the 1960's, 
+    most computers were used in business and tech, and people who used computers were
+    professional programers skilled to deal with adverse side effects of new releases.
+    Today, most computers are in tablets, phones, and ordinary custumers expect them
+    to just work. These changes in customers imply
+        1. new applications must work on old and new devices.
+        2. software upgrades can't break existing applications.
+
+> The number of available applications and indepdent development of OS upgrades and 
+    new applications make it impossible to test every application with every OS version.
+    We need another way to ensure whatever combination of software components will
+    work together, solved by detailed specifications and comprehensive compliance testing.
+
+
+Challenges of Software Interface Standardization
+================================================
+
+> When technologies achieved wide penetration, it becomes important to establish 
+    standards. In the short term, a slightly better implementation gives providers 
+    an advantage in the market place, yet fragmentation of the marketplace ill-servces both
+    producers and consumers. Television wouldn't have happened if every broadcaster and 
+    manufacturer had chosen different formats for TV signals. 
+
+> If stake-holders collectively agree on a single standard for TV broadcast formats, every 
+    TV set receives teh same signal, set manufacturers compete on the basis of price,
+    quality, and other features. The cost of TV goes down, and quality rises. Since all
+    stations reach all viewers, they compete on the basis of programming so the quality
+    , amount and variety of programming increases. Together, the market creates 
+    opportunities for products and services previously unimaginable. 
+
+> Standards are a good thing:
+    1. the details are extensively debated by experts so they're well considered and broad
+        enough to encompass a wide range of applications.
+    2. contributors work for different organizations with different strengths, so 
+        the standard is relatively ***platform neutral***, not favoring or disadvantaging 
+        a particular provider.
+    3. standards serve as a bsis for compatible implementations so they have clear and
+        complete specifications with well developed compliance testing procedure.
+    4. grant considerable freedom to explore alternative implemnentations as long as
+        developers maintain the specified external behavior. Any implementation that
+        conforms to the standard will work with all existing and future clients.
+
+> Standardization threatens diversity and evolution:
+    1. constrain range of possible implementations. An interface specifies who provides
+        information, how, and and when. Though, it may be possible to provide a much 
+        better implenmentation of same functionality if information provided at a different
+        time or form. Yet, if the new interface is incompatiable with the older one, the
+        improved design is non-compliant. The US pioneered TV, yet early standardization
+        locked US into primitive TV signals for decades. 
+    2. Interface standars impost constraints on consumers. An application written to 
+        a well-supported standard likely works on any compliant platform. This warranty is 
+        violated if an application uses any feature in a way not explicitly authorized by 
+        the standard, likely to encounter problems on new platforms and with new software
+        release providing the used services. Windows users refused to upgrade in fear of 
+        applications failing to work.
+    3. When different stake-holders depend on a standard, it's difficult to evolve them
+        to meet changing requirements:
+            1. many competing opinions about ehat requirements should be.
+            2. any change will adversly affect some stake-holders, who'll object to the 
+                improvements.
+
+
+Confusing Interfaces with implementations
+
+> Engineers think in terms of design, yet interface standards shouldn't specify design.
+    They should specify behavior, in as implementation-neutral way possible. This is 
+    difficult, because existing implementations provide context against which I frame
+    a problem statement. Standards 10 years ago written around a particular set of 
+    implementations which can't reasonly be extended to embrace new technology.
+
+> The other way this problem comes is when interface specifications are written after 
+    the fact.
+        1. Since implementation not developed against interface specifciations, it may
+            not actually comply with it
+        2. It's difficult to determine whether a particular behavior is a fundamental 
+            part of the interface or peculiarity of current implementation.
+    
+
+The Rate of Evolution, for Both Technology, and Applications
+
+> Technologies that go into computers evolve quickly, and software must evolve to exploit
+    them. We develop increasingly complex software (desk-top publishing, social networking).
+    No one expects to replace an old truck's engine with a new hybrid electric motor.
+    Yet, everyone expcts to run the latest apps on their ancient phone, laptop, or
+    desktop as long as it keeps running.
+
+> Maintaining stable interfaces amidst dramatic evolution is extremely difficult.
+    Windows developed to serve single-use PC platforms, difficult to extend its OS
+    service API's tp embrace networked applications and large servers. When faced with
+    such change, we find ourselves forced to choose between:
+        1. maintain strict compatibility with old interfaces, neglect supporting new applications
+            ,path to obsolescence.
+        2. develop new interface for new technology, imcompatible with older interfaces
+            and applications. Sacrifice existing customer for chance to win new ones.
+        3. compromise between partially supporting new technologies, remain mostly
+            compatible with old interfaces. This proves to be uncompetitive, incompatible.
+
+
+Proprietary vs. Open Standards
+
+> A ***Proprietary*** interface is developed and controlled by a single organization,
+    (Microsoft and Windows). An ***Open Standard*** is developed and controlled by a
+    consortium of providers and consumers (IETF network protocols). When a technology
+    provider develops new tech, they make a decision:
+        1. should they open the interface to competitors, to achieve a better standard,
+            more likely to be adopted?
+                It would cost
+                    - redcued freedom to adjust the interface
+                    - surrendering competitive advatnage from being first/only provider
+                    - reingineer existing implementation to comply with committee 
+                        adopted interfaces.
+        2. should they keep their interfaces proprietary, under patent protection, 
+            to maximise competitive advantage?
+                It would risk
+                    - market position if our interface is inferior as the open standard
+                        evolves.
+                    - fragmenting the market and reduce adoption.
+                    - large expenses for development and evangelization, compared to 
+                        distributed costs over many participants developing Open standard.
+
+> This dilemma complicated development of interfaces. Particpants try to develop strong
+    standards and simultaneously gain market position to protect prior investment.
+
+
+Application Progrmaming Interfaces
+==================================
+
+> When exploiting a service, we generally use an Application Programming Interface (API).
+    A typical API specification is ***open*** including
+        1. lists of
+            - included routines, and signatures
+            - associated macros, data types, data structures
+        2. discussion of 
+            - semantics of each operation, and how to use them
+            - all of the options, what they do, and how to use them
+            - return values and possible errors
+    The specifications may include sample usage scenarios.
+
+> The most important thing about API specifications is they are written at the source 
+    programming level (C++/C, Java, Py). They describe how source code is written to exploit
+    these features. They're a basis for software portability, though applications are
+    recompiled for each platform:
+        1. the benefits for 
+            - developers are applications written to an API easily recompile and 
+                correctly execute on any platform supporting the API
+            - platform suppleirs is any application written to supported API's easily port
+                to their platform
+    
+> The above benefits hold if API's defined in a platform-independent way.
+    1. API defining an `int` (64 bits) won't work on 32 bit machine.
+    2. API accessing bytes within an `int` may not work on a Big-Endian machine.
+    3. API assuming an particular feature implementation may be unimplementable on 
+    some other platforms.
+
+> In an Open Standard, participants find these problems and correct them. 
+
+
+Application Binary Interfaces
+=============================
+
+> Well defined API's are great, but not enough. While some are capable of re-compiling 
+    an application for a new platform, most users don't havess access to sources for 
+    most software they use and couldnt compile even if they had access. They want to 
+    download a program and run it.
+
+> How is it possible to build a binary application that runs on any Android phone or 
+    X86 architecture? This program isn't solved with API's but with Application
+    Binary Interfaces (ABI's):
+        1. ***Application Binary Interface*** - binding of an Applciation Programming
+            Interface to an Instruction Set Architecture.
+        
+> API defines subroutines, how to use them. ABI, machine language instructions, conventions
+    that are used to call routines. A typical ABI contains:
+        1. binary representation of key data types.
+        2. instructions to call and return from subroutine.
+        3. stack-fram structure and responsibilties of caller and callee
+        4. how params passed in and return values exchanged
+        5. register conventions
+        6. analagous conventions for system calls, signal deliveries
+        7. format of load modules, shared objects, DLL's
+    
+> The portability benefits to an ABI is greater than to an API. Applications written to
+    a supported API, complied and linkage edited by ABI-compliant rools correctly run 
+    unmodified on any platform supporting ABI. So, a program written for AMD processor
+    running FreeBSD will run on X86 architecture, without need to recompile for each CPU,
+    Operating System, distribution, or release. A higher level of portability towards 
+    wider range of platforms justifies the practicality to build and distribute binary 
+    versions of applications to diverse markets.
+
+
+Who actually uses the Application Binary Interfaces?
+    It's primarily used by
+        1. compiler to generate code for procedure entry, exit, and calls.
+        2. linkage editor to create load modules.
+        3. program loader to read load modules into memory.
+        4. operating system to process system calls.
+        5. programmers develpoing assembly language subroutines (for efficiency) 
+            called from a higher level language (C/C++).
+
